@@ -1,8 +1,9 @@
 import React, {useState} from 'react'
-import Aux from '../../hoc/Auxiliary';
+import Aux from '../../hoc/Auxiliary/Auxiliary';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 
 const INGREDIENT_PRICES = {
     salad : 0.5,
@@ -20,8 +21,33 @@ const BurgerBuilder = () => {
             meat : 0    
         },
         totalPrice: 4,
-        purchasable : false
+        purchasable : false,
+        purchasing : false
     });
+
+    const purchaseHandler = () => {
+        const newState = {
+            ...ingredientsState,
+            ingredients : {...ingredientsState.ingredients},
+        }
+        newState.purchasing = true;
+        setIngredientsState(newState);
+        console.log(newState);
+    }
+
+    const cancelPurchaseHandler = () => {
+        const newState = {
+            ...ingredientsState,
+            ingredients : {...ingredientsState.ingredients}
+        };
+        newState.purchasing = false;
+        setIngredientsState(newState);
+        console.log(newState);
+    }
+
+    const purchaseContinued = () => {
+        alert('You have proceed.');
+    }
 
     const purchasableBurger = (ingredients) => {
         let sum = Object.keys(ingredients)
@@ -42,6 +68,7 @@ const BurgerBuilder = () => {
         const newState = {
             ingredients : ingredientsState.ingredients,
             totalPrice : ingredientsState.totalPrice,
+            purchasing : ingredientsState.purchasing
         }
         newState.puchasable = purchasableBurger(newState.ingredients);
         setIngredientsState(newState);
@@ -62,8 +89,10 @@ const BurgerBuilder = () => {
         const newState = {
             ingredients : ingredientsState.ingredients,
             totalPrice : ingredientsState.totalPrice,
+            purchasing : ingredientsState.purchasing
         };
         newState.puchasable = purchasableBurger(newState.ingredients);
+        
         setIngredientsState(newState);
         console.log(newState);
     }
@@ -74,7 +103,14 @@ const BurgerBuilder = () => {
     }
     return(
         <Aux >
-            <Modal ingredients = {ingredientsState.ingredients}/>
+            <Modal show = {ingredientsState.purchasing} modalClosed = {cancelPurchaseHandler}>
+                <OrderSummary 
+                ingredients = {ingredientsState.ingredients} 
+                cancelClick = {cancelPurchaseHandler}
+                orderClick = {purchaseContinued}
+                price = {ingredientsState.totalPrice}
+                />
+            </Modal>
             <Burger ingredients = {ingredientsState.ingredients} />
             <BuildControls 
                 ingredientAdded = {addIngredientHandler}
@@ -82,6 +118,7 @@ const BurgerBuilder = () => {
                 disabled = {disabledInfo}
                 price = {ingredientsState.totalPrice}
                 purchasable = {!ingredientsState.puchasable}
+                purchase = {purchaseHandler}   
             />
         </Aux>
     );

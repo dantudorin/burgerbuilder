@@ -1,12 +1,24 @@
 import React from 'react';
 import classes from './Modal.module.css';
-import OrderSummary from '../../Burger/OrderSummary/OrderSummary';
+import Auxiliary from '../../../hoc/Auxiliary/Auxiliary';
+import Backdrop from '../Backdrop/Backdrop';
+
 const Modal = (props) => {
-   return(
-    <div className = {classes.Modal}>
-        <OrderSummary ingredients = {props.ingredients}/>            
-    </div>  
-   ); 
+    console.log(props.show);
+    return (
+        <Auxiliary>
+            <Backdrop show = {props.show} clicked={props.modalClosed}/>
+            <div className={classes.Modal}
+                style={{
+                    transform: props.show ? 'translateY(0)' : 'translateY(-100vh)',
+                    opacity: props.show ? '1' : '0'
+                }}
+            >
+                {props.children}
+            </div>
+        </Auxiliary>
+        
+    ); 
 }
 
 export default Modal;
